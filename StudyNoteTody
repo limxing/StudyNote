@@ -1,0 +1,93 @@
+##软件的单元测试
+安卓下的junittest：  
+需要把应用程序部署到真是的手机或模拟器中，  
+步骤：
+1、编写一个业务方法()  
+2、编写一个测试类继承AndroidTextCase，写一个测试方法。  
+3、在方法中建立业务方法的对象，然后调用业务方法的方法
+4、assertEquals（期望值，结果值）;
+5、设置配置文件	
+	<!-- 测试的指令集 放在manifest节点下->
+   	<instrumentation android:name="android.test.InstrumentationTestRunner
+       	 android:targetPackage="app的包名"></instrumentation>
+		<!--  测试需要的jar包 放在application节点下-->
+        <uses-library android:name="android.test.runner"/>
+
+二：Log日志的测试Log.i(tag,"info");
+三：查询是否存在SD卡以及剩余空间：
+	Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
+	long size = Environment.getExternalStorageDirectory().getFreeSpace();
+	String info = Formatter.formatFileSize(this, size);
+四：数据的存储：使用sharedPreferences把数据以xml的形式保存在包名下的shared的文件夹下，只能由本应用程序读写
+	步骤：
+	1、在类中声明一个sp成员变量，private SharedPreferences sp;
+	2、获取到这个文件：sp=this.getSharedPreferences("文件名",0);
+	3、获取内容：sp.getString("qq","初始化值");//getInt,getBlooean()...
+	4、填写内容：
+		1、获得一个编辑器：Edite edite=sp.edite();
+		2、存放数据：edite.putString("qq",qq);//putInt,putBlooean...
+		3、提交事务：edite.commite();
+五：使用安卓API面向对象的方法添加数据到xml文件(读写数据用的是同一个对象new 出来的)
+写：
+	1、XmlSerialzer serialzer=Xml.newSerializer();
+	2、File file=new File(this.getFilesDir(),"info.xml");
+	3、FileOutputStream os=new FileOutput(file);
+	4、serializer.setOutput(os,"utf-8");
+	5、serializer.startDocument("utf-8",true);
+	6、serializer.startTag(null,"name");
+	7、serializer.text(数据);
+	8、serializer.attribute(null,"属性名"，属性值);
+	9、serializer.endRag(null,"name");
+	
+	6、serializer.startTag(null,"name");
+	7、serializer.text(数据);
+	8、serializer.attribute(null,"属性名"，属性值);
+	9、serializer.endRag(null,"name");
+
+	10、serializer.endDocument();
+读：
+	1、XmlPullParser parser=Xml.newPullParser();
+	2、File file=new File(this.getFilesDir(),"info.xml");
+	3、FileInputStream inputStream=new FileInputStream(file);
+	4、parser.setInput(inputStream,"utf-8");
+	5、int type=parser.getEventType();
+	6、while(type!=XmlPullParser.START_DOCUMENT){
+		if(type==XmlPullParser.START_TAG){
+			if("qq".equals(parser.getNamee())){
+				et_qq.setText(parser.nextText);
+			}
+			if("qq".equals(parser.getNamee())){
+				et_qq.setText(parser.nextText);
+			}
+		}
+		parser.next();
+	}
+	7、inputStream.close();
+六、性别组的提取
+	<RadioGroup
+        android:id="@+id/rg_sex"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <RadioButton
+            android:id="@+id/rb_male"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="男" />
+
+        <RadioButton
+            android:id="@+id/rb_female"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="女" />
+    </RadioGroup>
+java中：
+	int id = rg_sex.getCheckedRadioButtonId();
+		String sex = "male";
+		if (id == R.id.rb_male) {
+			sex = "male";
+		} else {
+			sex = "female";
+		}
